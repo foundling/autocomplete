@@ -28,7 +28,8 @@ app.get('/api/autocomplete', (req, res) => {
   const { q } = req.query
   const results = ac.find(q)
   const payload = { 
-    found: Boolean(results) 
+    found: Boolean(results), 
+    suggestions: []
   }
 
   res.set('Content-Type', 'application/json')
@@ -37,7 +38,7 @@ app.get('/api/autocomplete', (req, res) => {
 
 })
 
-function initStore() {
+function start(port) {
 
   const rs = fs.createReadStream(dataPath)
   const upMsg = () => {
@@ -51,7 +52,7 @@ function initStore() {
   rs.on('end', () => {
     ac = new AutoComplete(store)
     ac.build()
-    app.listen(process.env.PORT || PORT, upMsg)
+    app.listen(port, upMsg)
   })
 
   rs.on('error', (err) => {
@@ -60,4 +61,4 @@ function initStore() {
 
 }
 
-module.exports = exports = { start: initStore }
+module.exports = exports = { start }
